@@ -61,6 +61,18 @@ def updateItem(itemName):
         inventory[target.product_id].quantity = int(input("Enter new quantity: >"))
         
     print("Inventory updated successfully!")
+def deleteItem(itemName):
+    target = None
+    for item in inventory.values():
+        if itemName == item.name:
+            target = Product(item.product_id, itemName, item.brand, item.category, item.price, item.quantity)
+    ## if it's not found, display error message
+    if target is None:
+        print("There is no items that match the name :(")
+        return
+    else :
+        removedProduct = inventory.pop(target.product_id)
+    print(f"Delete procedure is successfly done! :{removedProduct}")
 print("Welcome to the Inventory Management System!")
 while(selectedOption != 5):
     printMenu(mainMenu)
@@ -76,8 +88,8 @@ while(selectedOption != 5):
         selected_name = str(input("Enter product name to update: > "))
         updateItem(selected_name)
     elif(selectedOption == 4):
-        selected_id = int(input("Select an item "))
-        # showAll()
+        selected_name = str(input("Enter product name to delete: > "))
+        deleteItem(selected_name)
         print("Remove")
 print("Bye bye :)")
 
