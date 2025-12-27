@@ -41,9 +41,26 @@ def addItem():
     ## add inventory
     inventory[new_id] = product
     print("Item added successfully!")
+
+def viewInventory():
+    print("Current Inventory:\n" + "-" * 25)
+    all_info = "\n".join(str(p) for p in inventory.values())
+    print(all_info)
+    print("-" * 25)
+
+def updateItem(itemName):
+    target = None
     for item in inventory.values():
-        print(item)
-        print("-" * 20) # display item info
+        if itemName == item.name:
+            target = Product(item.product_id, itemName, item.brand, item.category, item.price, item.quantity)
+    ## if it's not found, display error message
+    if target is None:
+        print("There is no items that match the name :(")
+        return
+    else :
+        inventory[target.product_id].quantity = int(input("Enter new quantity: >"))
+        
+    print("Inventory updated successfully!")
 print("Welcome to the Inventory Management System!")
 while(selectedOption != 5):
     printMenu(mainMenu)
@@ -53,14 +70,13 @@ while(selectedOption != 5):
         continue
     if(selectedOption == 1):
         addItem()
-        print("add")
     elif(selectedOption == 2):
-        # searchContact()
-        print("viewe")
+        viewInventory()
     elif(selectedOption == 3):
-        # removeContact()
-        print("Update")
+        selected_name = str(input("Enter product name to update: > "))
+        updateItem(selected_name)
     elif(selectedOption == 4):
+        selected_id = int(input("Select an item "))
         # showAll()
         print("Remove")
 print("Bye bye :)")
