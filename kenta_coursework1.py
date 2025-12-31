@@ -12,9 +12,46 @@ class Product:
 
     def __str__(self):
         # display information
-        return f"ID: {self.product_id} | Name: {self.name} | Brand: {self.brand} | Category: {self.category} Price: ${self.price} | Quantity: {self.quantity}"
+        return f"{self.product_id},{self.name},{self.brand},{self.category},{self.price},{self.quantity}"
 
-inventory = dict()
+FILE_NAME = "inventory_data.txt"
+
+def save_inventory(inventory_dict):
+    # Save the inventory dictionary to a text file.
+    try:
+        with open(FILE_NAME, "w", encoding="utf-8") as f:
+            for product_obj in inventory_dict.values():
+                # str(product_obj) automatically calls the __str__ method
+                f.write(str(product_obj) + "\n")
+        print("Inventory successfully saved.")
+    except IOError as e:
+        print(f"Error: Could not write to file. {e}")
+
+def load_inventory():
+    # Read stored inventory from the file and return it as a dictionary.
+    inventory_dict = {}
+    
+    # Check if the file exists before attempting to open it
+    if not os.path.exists(FILE_NAME):
+        return inventory_dict  # Return an empty dictionary if file doesn't exist
+
+    try:
+        with open(FILE_NAME, "r", encoding="utf-8") as f:
+            for line in f:
+                # Remove newline characters and split by comma
+                data = line.strip().split(',')
+                if len(data) == 6:
+                    p_id, name, brand, cat, price, qty = data
+                    # Reconstruct the Product object and add it to the dictionary
+                    product_obj = Product(p_id, name, brand, cat, price, qty)
+                    inventory_dict[p_id] = product_obj
+        print("Data successfully loaded from file.")
+    except Exception as e:
+        print(f"An error occurred while loading: {e}")
+        
+    return inventory_dict
+
+inventory = load_inventory()
 used_ids = set()
 categories = ["Electronics", "Home", "Office"]
 selectedOption = 0
@@ -40,6 +77,7 @@ def addItem():
     product = Product(new_id ,inputProduct, inputBrand, inputCategory, inputQuantity, inputPrice)
     ## add inventory
     inventory[new_id] = product
+    save_inventory(inventory)
     print("Item added successfully!")
 
 def viewInventory():
@@ -59,7 +97,7 @@ def updateItem(itemName):
         return
     else :
         inventory[target.product_id].quantity = int(input("Enter new quantity: >"))
-        
+        save_inventory(inventory)
     print("Inventory updated successfully!")
 def deleteItem(itemName):
     target = None
@@ -72,6 +110,7 @@ def deleteItem(itemName):
         return
     else :
         removedProduct = inventory.pop(target.product_id)
+        save_inventory(inventory)
     print(f"Delete procedure is successfly done! :{removedProduct}")
 print("Welcome to the Inventory Management System!")
 while(selectedOption != 5):
