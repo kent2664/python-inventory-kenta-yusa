@@ -1,3 +1,4 @@
+import os
 mainMenu = ("1. Add Item","2. View Inventory ","3. Update Item", "4. Remove Item","5. Exit")
 
 class Product:
